@@ -1,3 +1,4 @@
 # ignore or will not add in git
 
 node_modules/
+.env

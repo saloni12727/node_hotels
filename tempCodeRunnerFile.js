@@ -18,6 +18,10 @@ app.use('/person',personRoutes);
 const menuRoutes = require('./routes/menuRoutes');
 app.use('/menuItem',menuRoutes);
 
+//student data 
+const studentRoutes = require('./routes/studentRoutes');
+app.use('/student',studentRoutes);
+
 
 
 app.get('/',(req,res)=>{
