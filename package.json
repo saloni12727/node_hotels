@@ -1,0 +1,21 @@
+{
+  "name": "nodecrud",
+  "version": "1.0.0",
+  "main": "crud.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "saloni verma",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "express": "^4.21.1",
+    "loadash": "^1.0.0",
+    "mongoose": "^8.8.1",
+    "nodemon": "^3.1.7",
+    "prompt-sync": "^4.2.0",
+    "router": "^1.3.8"
+  }
+}
