@@ -1,6 +1,11 @@
 let express = require('express');
 let app = express();
-const port=3000;
+// const port=3000;
+require('dotenv').config();
+
+//if port is define in .env file it will use that port but if not avalible then use 3000
+const PORT = process.env.PORT || 3000;
+
 
 const bodyParser = require('body-parser');
 
