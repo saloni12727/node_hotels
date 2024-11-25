@@ -6,8 +6,8 @@ const  menuModel = require('../models/menu');
 //save menu data 
 router.post('/',async(req,res)=>{
     try{
-     const menuData = req.body;
-     const newData = new menuModel(menuData);
+     const menuData = req.body;  //get the data from reqbody
+     const newData = new menuModel(menuData);  //new menuModel(): Creates a new instance of the menuModel, which represents a single document to be stored in the database. then menuData: This is an object containing the data for the new document. It must match the structure defined by the schema used to create the menuModel.
      const response = await newData.save() ;
      console.log("data saved in data base");
      res.status(200).json(response);

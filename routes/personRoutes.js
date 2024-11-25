@@ -1,5 +1,6 @@
 const express = require('express');
 let router = express.Router();
+const  {jwtMiddlware,genrateToke} = require('../jwt')
 
 const personModel =require('../models/person');
 
@@ -25,13 +26,27 @@ const personModel =require('../models/person');
 // })
 
 //for save the data in database
-router.post('/',async(req,res)=>{
+router.post('/signup',async(req,res)=>{
     try{
         const data = req.body;
         const newPerson = new personModel(data);
         const response = await newPerson.save();
         console.log("data saved in database");
-        res.status(200).json(response);
+          
+        // sending data by toke 
+        const payload = {
+            id : response.id,
+            name:response.name,
+            username : response.username,
+        }
+
+        //add jwt token 
+        // const token = genrateToke(response.username) it will only send username
+        const token = genrateToke(payload)
+        console.log("token is " ,JSON.stringify(payload))
+        console.log("token is :" ,token)
+
+        res.status(200).json({response:response,token:token});
     }catch(err){
          console.log("some error"+err);
          res.status(500).json({error:"some error occured"})
@@ -39,9 +54,50 @@ router.post('/',async(req,res)=>{
   
 })
 
+//for login by sending token by clint
+router.post('/login',async(req,res)=>{
+    try{
+        //get data from req body
+      const  {username,password} =req.body;
+      const user = await personModel.findOne({username:username}) ;
+
+      if(!user || !(await user.comparePassword(password))){
+        return res.status(401).json({error:"invalid username or password"});
+      }
+      //genrate token
+      const payload ={
+        id : user.id,
+        username:user.username
+      }
+      const token =genrateToke(payload);
+      res.json({token})
+
+    }catch(err){
+      console.log(err);
+      res.status(500).json({error:"internal error"})
+    }
+} )
+
+
+//profile
+router.get('/profile',jwtMiddlware,async(req,res)=>{
+    try{
+       const userData = req.user;
+       console.log("user data is " ,userData)
+       const userID = userData.id
+       const find = await personModel.findById(userID);
+       res.status(200).json({find});
+
+    }catch(err){
+        console.log(err);
+        res.status(500).json({error:"internal error"})
+    }
+})
+
+
 
 //for send data from server to clint
-router.get('/',async(req,res)=>{
+router.get('/' ,jwtMiddlware, async(req,res)=>{
     try{
     const data = await personModel.find()
     console.log("data send");
@@ -112,8 +168,6 @@ router.delete('/:id',async(req,res)=>{
 
      console.log("data deleted");
      res.status(200).json({message:"deleted successfully"});
-
-
     }catch(err){
         console.log("error",err);
         res.status(500).json({error:"some error occures"});
